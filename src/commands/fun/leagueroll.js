@@ -1,0 +1,101 @@
+const {
+	SlashCommandBuilder,
+	EmbedBuilder,
+	AttachmentBuilder,
+} = require("discord.js");
+const path = require("path");
+
+const fs = require("fs");
+const csv = require("csv-parser");
+
+module.exports = {
+	data: new SlashCommandBuilder()
+		.setName("leagueroll")
+		.setDescription("Let's spin the roulette!...")
+		.addStringOption((option) =>
+			option
+				.setName("lane")
+				.setDescription("Which lane would you like to go?")
+				.setRequired(true)
+				.addChoices(
+					{ name: "Top", value: "Top" },
+					{ name: "Jungle", value: "Jungle" },
+					{ name: "Mid", value: "Mid" },
+					{ name: "Bot", value: "Bot" },
+					{ name: "Support", value: "Support" },
+					{ name: "Random", value: "Random" }
+				)
+		),
+	async execute(interaction, bot) {
+		const lane = interaction.options.getString("lane");
+		const data = [];
+
+		let colour;
+		if (lane == "Top") {
+			colour = "#00235B";
+		} else if (lane == "Jungle") {
+			colour = "#98DFD6";
+		} else if (lane == "Mid") {
+			colour = "#E21818";
+		} else if (lane == "Bot") {
+			colour = "#FFDD83";
+		} else if (lane == "Support") {
+			colour = "#E8A0BF";
+		} else {
+			colour = "Random";
+		}
+
+		let icon;
+		if (lane == "Top") {
+			icon = "src/commands/fun/icons/Top.png";
+		} else if (lane == "Jungle") {
+			icon = "src/commands/fun/icons/Jungle.png";
+		} else if (lane == "Mid") {
+			icon = "src/commands/fun/icons/Mid.png";
+		} else if (lane == "Bot") {
+			icon = "src/commands/fun/icons/Bot.png";
+		} else if (lane == "Support") {
+			icon = "src/commands/fun/icons/Support.png";
+		} else if (lane == "Random") {
+			icon = "src/commands/fun/icons/Random.png";
+		}
+		const attachment = new AttachmentBuilder(icon);
+
+		fs.createReadStream("src/data/League/roles.csv")
+			.pipe(csv())
+			.on("data", (row) => {
+				if (lane != "Random") {
+					if (row[lane] == "True") {
+						data.push(row);
+					}
+				} else {
+					data.push(row);
+				}
+			})
+			.on("end", () => {
+				const randomIndex = Math.floor(
+					Math.random() * data.length
+				);
+				const randomData = data[randomIndex];
+				//console.log(randomData);
+
+				const embed = new EmbedBuilder()
+					.setTitle(lane + " Champions")
+					.setDescription(
+						`The randomly selected champion is ${randomData.Champion}`
+					)
+					.setThumbnail(`attachment://${lane}.png`)
+					.setColor(colour)
+					.setTimestamp(Date.now())
+					.setFooter({
+						iconURL: `${interaction.user.displayAvatarURL()}`,
+						text: `Asked by ${interaction.user.tag}`,
+					});
+
+				interaction.reply({
+					embeds: [embed],
+					files: [attachment],
+				});
+			});
+	},
+};
