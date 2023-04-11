@@ -1,0 +1,30 @@
+{
+  "name": "rubberduckbot",
+  "version": "0.0.1",
+  "description": "Discord Bot for Rubber Duck Server",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "node ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CanadianDoc/RubberDuckBot.git"
+  },
+  "keywords": [
+    "DiscordBot"
+  ],
+  "author": "Doc",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CanadianDoc/RubberDuckBot/issues"
+  },
+  "homepage": "https://github.com/CanadianDoc/RubberDuckBot#readme",
+  "dependencies": {
+    "@discordjs/rest": "^1.7.0",
+    "ascii-table": "^0.0.9",
+    "discord-api-types": "^0.37.38",
+    "discord.js": "^14.9.0",
+    "dotenv": "^16.0.3",
+    "node-fetch": "^3.3.1"
+  }
+}
