@@ -80,10 +80,7 @@ module.exports = {
 				//console.log(randomData);
 
 				const embed = new EmbedBuilder()
-					.setTitle(lane + " Champions")
-					.setDescription(
-						`The randomly selected champion is ${randomData.Champion}`
-					)
+					.setTitle(randomData.Champion)
 					.setThumbnail(`attachment://${lane}.png`)
 					.setColor(colour)
 					.setTimestamp(Date.now())
