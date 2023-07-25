@@ -1,0 +1,57 @@
+const {
+	SlashCommandBuilder,
+	EmbedBuilder,
+} = require("discord.js");
+
+module.exports = {
+	data: new SlashCommandBuilder()
+		.setName("ticket")
+		.setDescription("Open a ticket")
+		.addStringOption((option) =>
+			option
+				.setName("reason")
+				.setDescription("Reason for opening a ticket")
+				.setRequired(true)
+		),
+	async execute(interaction, bot) {
+		const reason = interaction.options.getString("reason");
+
+		const channel = await interaction.guild.channels.create(
+			`ticket-${interaction.user.username}`,
+			{
+				type: "text",
+				parent: "876795749474056704",
+				permissionOverwrites: [
+					{
+						id: interaction.guild.id,
+						deny: ["VIEW_CHANNEL"],
+					},
+					{
+						id: interaction.user.id,
+						allow: ["VIEW_CHANNEL"],
+					},
+					{
+						id: "876795749474056704",
+						allow: ["VIEW_CHANNEL"],
+					},
+				],
+			}
+		);
+
+		const embed = new EmbedBuilder()
+			.setTitle(
+				`Ticket opened by ${interaction.user.username}`
+			)
+			.setDescription(`Reason: ${reason}`)
+			.setColor("RANDOM")
+			.setTimestamp()
+			.setFooter(`Ticket ID: ${channel.id}`);
+
+		channel.send({ embeds: [embed] });
+
+		interaction.reply({
+			content: `Ticket created at ${channel}`,
+			ephemeral: true,
+		});
+	},
+};
