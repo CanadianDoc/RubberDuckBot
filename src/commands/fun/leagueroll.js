@@ -21,7 +21,7 @@ module.exports = {
       const champions = Object.entries(allChampionsData);
 
       const randomIndex = Math.floor(Math.random() * champions.length);
-      const [championName, { tags }] = champions[randomIndex];
+      const [championName] = champions[randomIndex];
       await interaction.reply(`Your champion is: ${championName}!`);
     } catch (error) {
       console.error(error);
