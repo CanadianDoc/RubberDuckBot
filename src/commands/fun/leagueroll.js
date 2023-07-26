@@ -6,9 +6,8 @@ const { Routes } = require("discord-api-types/v10");
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("leagueroll")
-    .setDescription("Let's spin the roulette!..."),
+    .setDescription("Let's spin the champion roulette!..."),
   async execute(interaction, bot) {
-    const lane = interaction.options.getString("lane");
     try {
       const latestPatch = (
         await axios.get("https://ddragon.leagueoflegends.com/api/versions.json")
@@ -25,9 +24,7 @@ module.exports = {
       await interaction.reply(`Your champion is: ${championName}!`);
     } catch (error) {
       console.error(error);
-      await interaction.reply(
-        "An error occurred while processing your request."
-      );
+      await interaction.reply("League of Legends API is down at the moment.");
     }
   },
 };
