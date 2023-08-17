@@ -18,7 +18,7 @@ module.exports = {
         .setDescription("The name of the event")
         .setRequired(true)
     )
-    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+    .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages),
   async execute(interaction, bot) {
     const event = interaction.options.getString("event");
 
