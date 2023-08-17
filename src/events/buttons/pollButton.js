@@ -15,6 +15,21 @@ const saveVotes = (votes) => {
 
 const votes = loadVotes();
 
+function adjustVotes(embed, prevVote, newVote) {
+  const getFieldByName = (name) =>
+    embed.fields.find(
+      (field) => field.name.toLowerCase() === name.toLowerCase()
+    );
+  if (prevVote) {
+    getFieldByName(prevVote).value = (
+      parseInt(getFieldByName(prevVote).value) - 1
+    ).toString();
+  }
+  getFieldByName(newVote).value = (
+    parseInt(getFieldByName(newVote).value) + 1
+  ).toString();
+}
+
 module.exports = {
   data: {
     name: "poll",
@@ -24,7 +39,7 @@ module.exports = {
     if (!interaction.isButton()) return;
 
     const arr = interaction.customId.split("-");
-    if (arr[0] != "poll") return;
+    if (arr[0] !== "poll") return;
 
     const userVoteId = `${interaction.user.id}-${interaction.message.id}`;
     const userVoted = votes.get(userVoteId);
@@ -39,34 +54,16 @@ module.exports = {
       });
     }
 
-    const yes = embed.fields[0];
-    const no = embed.fields[1];
-
-    if (userVoted) {
-      if (userVoted == newVote) {
-        return interaction.reply({
-          content: `You already voted for ${newVote}`,
-          ephemeral: true,
-        });
-      } else {
-        if (newVote == "yes") {
-          yes.value = (parseInt(yes.value) + 1).toString();
-          no.value = (parseInt(no.value) - 1).toString();
-        } else {
-          yes.value = (parseInt(yes.value) - 1).toString();
-          no.value = (parseInt(no.value) + 1).toString();
-        }
-      }
+    if (userVoted === newVote) {
+      return interaction.reply({
+        content: `You already voted for ${newVote}`,
+        ephemeral: true,
+      });
     } else {
-      if (newVote == "yes") {
-        yes.value = (parseInt(yes.value) + 1).toString();
-      } else {
-        no.value = (parseInt(no.value) + 1).toString();
-      }
+      adjustVotes(embed, userVoted, newVote);
+      votes.set(userVoteId, newVote);
+      saveVotes(votes);
     }
-
-    votes.set(userVoteId, newVote);
-    saveVotes(votes);
 
     interaction.message.edit({ embeds: [embed] });
     interaction.reply({

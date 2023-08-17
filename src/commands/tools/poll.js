@@ -19,15 +19,6 @@ module.exports = {
         .setRequired(true)
     ),
   async execute(interaction, bot) {
-    /*if (
-      !interaction.member.permissions.has(PermissionFlagsBits.Administrator) ||
-      !channelId == process.env.debateChannelID
-    ) {
-      return interaction.reply({
-        content: "You don't have permission to use this command!",
-        ephemeral: true,
-      });
-    }*/
     const question = interaction.options.getString("question");
 
     const embed = new EmbedBuilder()

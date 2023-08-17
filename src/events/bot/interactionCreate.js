@@ -24,18 +24,6 @@ module.exports = {
 
       let buttonHandler;
 
-      /*try {
-        buttonHandler = require(path.join(
-          __dirname,
-          "buttons",
-          category,
-          `${category}Button.js`
-        ));
-      } catch (err) {
-        console.log(`No handler found for category: ${category}`);
-        return new Error(`No handler found for category: ${category}`);
-      }*/
-
       switch (type) {
         case "poll":
           {
@@ -43,14 +31,24 @@ module.exports = {
           }
           break;
 
-        case "role": {
-          buttonHandler = require("../buttons/roleButton.js");
-        }
+        case "attendance":
+          {
+            buttonHandler = require("../buttons/attendanceButton.js");
+          }
+          break;
 
-        default: {
-          console.log("No customId associated with this button");
-          return new Error("No customId associated with this button");
-        }
+        case "role":
+          {
+            buttonHandler = require("../buttons/roleButton.js");
+          }
+          break;
+
+        default:
+          {
+            console.log("No customId associated with this button");
+            return new Error("No customId associated with this button");
+          }
+          break;
       }
 
       try {
