@@ -1,19 +1,5 @@
-const { ButtonInteraction } = require("discord.js");
-const fs = require("fs");
-const path = require("path");
-
-const votesFilePath = path.join(__dirname, "..", "..", "data", "votes.json");
-
-const loadVotes = () => {
-  const data = fs.readFileSync(votesFilePath, "utf8");
-  return new Map(JSON.parse(data));
-};
-
-const saveVotes = (votes) => {
-  fs.writeFileSync(votesFilePath, JSON.stringify([...votes]), "utf8");
-};
-
-const votes = loadVotes();
+const { loadData, saveData } = require("../bot/db");
+const votes = loadData("poll");
 
 function adjustVotes(embed, prevVote, newVote) {
   const getFieldByName = (name) =>
@@ -62,7 +48,7 @@ module.exports = {
     } else {
       adjustVotes(embed, userVoted, newVote);
       votes.set(userVoteId, newVote);
-      saveVotes(votes);
+      saveData(votes, "poll");
     }
 
     interaction.message.edit({ embeds: [embed] });

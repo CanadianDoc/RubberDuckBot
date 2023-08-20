@@ -1,5 +1,7 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
 const fs = require("fs");
+const path = require("path");
+const dbFilePath = path.join(__dirname, "..", "..", "data", "db.json");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -11,9 +13,9 @@ module.exports = {
         .setDescription("The name of the database to wipe")
         .setRequired(true)
         .addChoices(
-          { name: "Polls", value: "polls" },
+          { name: "Poll", value: "poll" },
           { name: "Attendance", value: "attendance" },
-          { name: "Roles", value: "roles" }
+          { name: "All", value: "all" }
         )
     )
     .setDMPermission(false)
@@ -21,19 +23,19 @@ module.exports = {
 
   async execute(interaction, bot) {
     const database = interaction.options.getString("database");
-    let filePath;
 
-    if (database === "polls") {
-      filePath = "src/data/votes.json";
+    let dbData = JSON.parse(fs.readFileSync(dbFilePath, "utf8"));
+
+    if (database === "poll") {
+      dbData.poll = [];
     } else if (database === "attendance") {
-      filePath = "src/data/attendance.json";
-    } else if (database === "roles") {
-      filePath = "src/data/roles.json";
+      dbData.attendance = [];
+    } else if (database === "all") {
+      dbData.poll = [];
+      dbData.attendance = [];
     }
 
-    // Overwrite the file with an empty array to wipe the data
-    const emptyDataString = JSON.stringify([]);
-    fs.writeFileSync(filePath, emptyDataString, "utf8");
+    fs.writeFileSync(dbFilePath, JSON.stringify(dbData), "utf8");
 
     interaction.reply({
       content: "Data has been wiped",

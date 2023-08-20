@@ -1,6 +1,5 @@
-const { ButtonInteraction } = require("discord.js");
-
-const votes = new Map();
+const { loadData, saveData } = require("../bot/db");
+const votes = loadData("attendance");
 
 function adjustVotes(embed, prevVoteData, newVote, username) {
   const getFieldByName = (name) =>
@@ -63,6 +62,7 @@ module.exports = {
     } else {
       adjustVotes(embed, userVotedData, newVote, username);
       votes.set(userVoteId, { vote: newVote, username: username });
+      saveData(votes, "attendance");
     }
 
     interaction.message.edit({ embeds: [embed] });
